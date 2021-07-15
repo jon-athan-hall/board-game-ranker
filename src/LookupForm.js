@@ -4,7 +4,8 @@ class LookupForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: 'username'
+      username: 'username',
+      games: []
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -15,6 +16,32 @@ class LookupForm extends Component {
     this.setState({
       username: e.target.value
     });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const gamesPromise = fetch(`http://www.boardgamegeek.com/xmlapi2/collection?username=${this.state.username}&played=1&excludesubtype=boardgameexpansion&brief=1`);
+    gamesPromise
+        .then(response => {
+          if (response.status === 200)
+            return response.text();
+          else
+            console.log(response.status);
+        })
+        .then(text => {
+          console.log(text);
+          const responseDocument = new DOMParser().parseFromString(text, 'application/xml');
+
+          /**
+           * Use spread operator to turn NodeList into Array. Then map over the nodes to pull out the game name only.
+           */
+          const games = [...responseDocument.getElementsByTagName('name')].map(game => game.textContent);
+
+          console.log(games);
+          this.setState({
+            games
+          });
+        });
   }
 
   render() {
