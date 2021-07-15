@@ -1,8 +1,23 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import renderer from 'react-test-renderer';
 import LookupForm from './LookupForm';
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<LookupForm />, div);
-})
+it('renders correctly', () => {
+  const tree = renderer.create(<LookupForm />).toJSON();
+  expect(tree).toMatchSnapshot();
+});
+
+/**
+ * expect();
+ * .toBe(n);
+ * .toEqual(n);
+ * .not.toBe(n);
+ * .toBeDefined();
+ * .toBeFalsy();
+ * .toBeGreaterThanOrEqual(n);
+ * .toMatch('string');
+ * .toContain(value);
+ * .toThrow(error);
+ * done(); to wait for callback results.
+ * use return
+ */
