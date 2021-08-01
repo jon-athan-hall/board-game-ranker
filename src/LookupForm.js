@@ -4,7 +4,7 @@ class LookupForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: 'username',
+      username: '',
       games: [],
       disabled: false
     };
@@ -72,6 +72,7 @@ class LookupForm extends Component {
         <input
           type="text"
           id="username"
+          placeholder="username"
           value={this.state.username}
           onChange={this.handleChange}
           className="p-4 border border-gray-500 rounded-md"
