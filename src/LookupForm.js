@@ -75,7 +75,7 @@ class LookupForm extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit} className="flex flex-col p-8 space-y-4">
+      <form onSubmit={this.handleSubmit} className="flex flex-col space-y-4">
         <label htmlFor="username">BoardGameGeek username</label>
         <input
           type="text"
