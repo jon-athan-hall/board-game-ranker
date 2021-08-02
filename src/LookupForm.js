@@ -1,11 +1,12 @@
 import React, { Component } from "react";
+import { shuffle } from './helpers.js'
 
 class LookupForm extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       username: '',
-      games: [],
       disabled: false
     };
 
@@ -20,6 +21,11 @@ class LookupForm extends Component {
     });
   }
 
+ /**
+   * Try to fetch the board game collection of the given BGG username. With a 200 response, convert
+   * XML to JSON, shuffle up the games, update the state, and finally clear the interval. On anything
+   * but 200, log the response only; the interval will continue to call tryFetch.
+   */
   tryFetch() {
     const gamesPromise = fetch(`http://www.boardgamegeek.com/xmlapi2/collection?username=${this.state.username}&played=1&excludesubtype=boardgameexpansion&brief=1`);
     gamesPromise
@@ -35,16 +41,17 @@ class LookupForm extends Component {
         const responseDocument = new DOMParser().parseFromString(text, 'application/xml');
 
         /**
-         * Use spread operator to turn NodeList into Array. Then map over the nodes to pull out the game name only.
+         * Use spread operator to turn NodeList into Array. Then map over the nodes to pull out the game names only.
          */
-        const games = [...responseDocument.getElementsByTagName('name')].map(game => game.textContent);
+        let games = [...responseDocument.getElementsByTagName('name')].map(game => game.textContent);
 
         this.setState({
-          disabled: false,
-          games
+          inputDisabled: false
         });
 
-        console.log(this.state.games);
+        games = shuffle(games);
+
+        this.props.setGames(games);
       })
       .catch(status => {
         console.log(`Response status: ${status}`);
@@ -63,6 +70,7 @@ class LookupForm extends Component {
 
   componentWillUnmount() {
     clearInterval(this.fetchInterval);
+    console.log("Interval cleared.");
   }
 
   render() {
