@@ -36,17 +36,8 @@ class App extends Component {
     let currentMerge = this.state.currentMerge;
     const length = this.state.games.length;
 
-    console.log(games);
-    console.log(finished);
-    console.log(width);
-    console.log(leftIndex);
-    console.log(rightIndex);
-    console.log(currentLeftIndex);
-    console.log(currentRightIndex);
-    console.log(currentMerge);
-
     /**
-     * Add the user-selected choice to the currentMerge. Advance the index for the half where that choice is.
+     * Add the user-selected choice to the currentMerge. Advance the index for the half where that choice came from.
      */
     if (e.target.value === 'left') {
       currentMerge.push(games[currentLeftIndex]);
@@ -63,26 +54,33 @@ class App extends Component {
     if (currentLeftIndex >= rightIndex) {
       currentMerge = [...currentMerge, ...games.slice(currentRightIndex, Math.min(rightIndex + width, length))];
     } else if (currentRightIndex >= Math.min(rightIndex + width, length)) {
-      console.log('slice: ', games.slice(currentLeftIndex, rightIndex));
       currentMerge = [...currentMerge, ...games.slice(currentLeftIndex, rightIndex)];
     }
-
-    console.log('after if/else: ', currentMerge);
 
     /**
      * If either the left or right half reached its end, then the current merge is complete.
      */
     if (currentLeftIndex >= rightIndex || currentRightIndex >= Math.min(rightIndex + width, length)) {
-      console.log('merge done: ', currentMerge);
+      /**
+       * Overwrite the appropriate section of games with the current merge.
+       */
       currentMerge.forEach((game, index) => {
         games[index + leftIndex] = game;
       });
 
       currentMerge = [];
 
+      /**
+       * Move along to the next two halves to merge.
+       */
       leftIndex = leftIndex + width * 2;
       rightIndex = rightIndex + width * 2;
 
+      /**
+       * If the next halves go beyond the length of the whole games list, then increase the width
+       * by a factor of 2, and reset the halves back to the beginning of the games array. Now this
+       * lap through the games will be with halves twice as large as before.
+       */
       if (rightIndex >= length) {
         width = width * 2;
         leftIndex = 0;
@@ -95,15 +93,6 @@ class App extends Component {
         finished = true;
       }
     }
-
-    console.log(games);
-    console.log(finished);
-    console.log(width);
-    console.log(leftIndex);
-    console.log(rightIndex);
-    console.log(currentLeftIndex);
-    console.log(currentRightIndex);
-    console.log(currentMerge);
 
     this.setState({
       finished,
@@ -127,9 +116,6 @@ class App extends Component {
         {!this.state.finished &&
           <div>
             <h2 className="text-xl font-bold text-center mb-8">Which one is better?</h2>
-            <p>games: {this.state.games}</p>
-            <p>width: {this.state.width}</p>
-            <p>currentMerge: {this.state.currentMerge}</p>
             <div className="flex space-x-8">
               <button
                 className="w-1/2 p-4 bg-yellow-600 rounded-md"
