@@ -7,7 +7,7 @@ class App extends Component {
     super(props)
 
     this.state = {
-      games: ['4', '7', '6', '1', '3', '2', '5', '8'],
+      games: ['4', '7', '6', '1', '3', '2', '5'],
       finished: false,
       width: 1,
       leftIndex: 0,
@@ -74,6 +74,10 @@ class App extends Component {
      */
     if (currentLeftIndex >= rightIndex || currentRightIndex >= Math.min(rightIndex + width, length)) {
       console.log('merge done: ', currentMerge);
+      currentMerge.forEach((game, index) => {
+        games[index + leftIndex] = game;
+      });
+
       currentMerge = [];
 
       leftIndex = leftIndex + width * 2;
