@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import LookupForm from './LookupForm';
+import GameList from './GameList';
 
 class App extends Component {
   constructor(props) {
@@ -134,7 +135,7 @@ class App extends Component {
             </div>
           </div>
         }
-        <div>{this.state.games}</div>
+        <GameList games={this.state.games} />
       </div>
     );
   }
