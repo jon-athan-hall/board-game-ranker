@@ -7,11 +7,11 @@ class App extends Component {
     super(props)
 
     this.state = {
-      games: ['4', '7', '6', '1', '3', '2', '5'],
+      games: ['Race for the Galaxy', 'Gingerbread House', 'K2', 'Empires of the North', 'Hey! That\'s My Fish', 'Let\'s Make a Bus Route', 'Wingspan'],
       finished: false,
       width: 1,
-      leftIndex: 0,
-      rightIndex: 1,
+      leftStartIndex: 0,
+      rightStartIndex: 1,
       currentLeftIndex: 0,
       currentRightIndex: 1,
       currentMerge: []
@@ -31,7 +31,7 @@ class App extends Component {
     let games = this.state.games;
     let finished = this.state.finished;
     let width = this.state.width;
-    let [leftIndex, rightIndex] = [this.state.leftIndex, this.state.rightIndex];
+    let [leftStartIndex, rightStartIndex] = [this.state.leftStartIndex, this.state.rightStartIndex];
     let [currentLeftIndex, currentRightIndex] = [this.state.currentLeftIndex, this.state.currentRightIndex];
     let currentMerge = this.state.currentMerge;
     const length = this.state.games.length;
@@ -51,21 +51,21 @@ class App extends Component {
      * If the left half has reached its end, concatenate the rest of the right half to currentMerge.
      * Or if the right half has reached its end, concatenate the rest of the left half instead.
      */
-    if (currentLeftIndex >= rightIndex) {
-      currentMerge = [...currentMerge, ...games.slice(currentRightIndex, Math.min(rightIndex + width, length))];
-    } else if (currentRightIndex >= Math.min(rightIndex + width, length)) {
-      currentMerge = [...currentMerge, ...games.slice(currentLeftIndex, rightIndex)];
+    if (currentLeftIndex >= rightStartIndex) {
+      currentMerge = [...currentMerge, ...games.slice(currentRightIndex, Math.min(rightStartIndex + width, length))];
+    } else if (currentRightIndex >= Math.min(rightStartIndex + width, length)) {
+      currentMerge = [...currentMerge, ...games.slice(currentLeftIndex, rightStartIndex)];
     }
 
     /**
      * If either the left or right half reached its end, then the current merge is complete.
      */
-    if (currentLeftIndex >= rightIndex || currentRightIndex >= Math.min(rightIndex + width, length)) {
+    if (currentLeftIndex >= rightStartIndex || currentRightIndex >= Math.min(rightStartIndex + width, length)) {
       /**
        * Overwrite the appropriate section of games with the current merge.
        */
       currentMerge.forEach((game, index) => {
-        games[index + leftIndex] = game;
+        games[index + leftStartIndex] = game;
       });
 
       currentMerge = [];
@@ -73,21 +73,21 @@ class App extends Component {
       /**
        * Move along to the next two halves to merge.
        */
-      leftIndex = leftIndex + width * 2;
-      rightIndex = rightIndex + width * 2;
+      leftStartIndex = leftStartIndex + width * 2;
+      rightStartIndex = rightStartIndex + width * 2;
 
       /**
        * If the next halves go beyond the length of the whole games list, then increase the width
        * by a factor of 2, and reset the halves back to the beginning of the games array. Now this
        * lap through the games will be with halves twice as large as before.
        */
-      if (rightIndex >= length) {
+      if (rightStartIndex >= length) {
         width = width * 2;
-        leftIndex = 0;
-        rightIndex = Math.min(leftIndex + width, length);
+        leftStartIndex = 0;
+        rightStartIndex = Math.min(leftStartIndex + width, length);
       }
 
-      [currentLeftIndex, currentRightIndex] = [leftIndex, rightIndex];
+      [currentLeftIndex, currentRightIndex] = [leftStartIndex, rightStartIndex];
 
       if (width >= length) {
         finished = true;
@@ -97,8 +97,8 @@ class App extends Component {
     this.setState({
       finished,
       width,
-      leftIndex,
-      rightIndex,
+      leftStartIndex,
+      rightStartIndex,
       currentLeftIndex,
       currentRightIndex,
       currentMerge
@@ -134,6 +134,7 @@ class App extends Component {
             </div>
           </div>
         }
+        <div>{this.state.games}</div>
       </div>
     );
   }
