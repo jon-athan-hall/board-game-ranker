@@ -8,7 +8,7 @@ class App extends Component {
     super(props)
 
     this.state = {
-      games: ['Race for the Galaxy', 'Gingerbread House', 'K2', 'Empires of the North', 'Hey! That\'s My Fish', 'Let\'s Make a Bus Route', 'Wingspan'],
+      games: [],
       finished: false,
       width: 1,
       leftStartIndex: 0,
@@ -107,6 +107,7 @@ class App extends Component {
   }
 
   render() {
+    const showButtons = !this.state.finished && (this.state.games.length > 0);
     return (
       <div className="w-full h-screen p-4 lg:p-16 flex flex-col space-y-16">
         <h1 className="text-3xl font-extrabold text-center">Board Game Ranker</h1>
@@ -114,7 +115,7 @@ class App extends Component {
           setGames={this.setGames}
           buttonText="Get my played games"
         />
-        {!this.state.finished &&
+        {showButtons &&
           <div>
             <h2 className="text-xl font-bold text-center mb-8">Which one is better?</h2>
             <div className="flex space-x-8">
